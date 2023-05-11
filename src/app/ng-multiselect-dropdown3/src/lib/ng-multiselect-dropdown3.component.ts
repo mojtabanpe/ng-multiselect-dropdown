@@ -1,29 +1,52 @@
-import { Component, HostListener, forwardRef, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from "@angular/forms";
-import { ListItem, IDropdownSettings } from "./multiselect.model";
-import { ListFilterPipe } from "./list-filter.pipe";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output, forwardRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IDropdownSettings, ListItem } from './multiselect.model';
+import { ListFilterPipe } from './list-filter.pipe';
 
 export const DROPDOWN_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => MultiSelectComponent),
+  useExisting: forwardRef(() => NgMultiselectDropdown3Component),
   multi: true
 };
 const noop = () => {};
 
+
 @Component({
-  selector: "ng-multiselect-dropdown",
-  templateUrl: "./multi-select.component.html",
-  styleUrls: ["./multi-select.component.scss"],
+  selector: 'ng-multiselect-dropdown3',
+  templateUrl: './ng-multiselect-dropdown3.component.html',
+  styleUrls: ['./ng-multiselect-dropdown3.component.scss'],
   providers: [DROPDOWN_CONTROL_VALUE_ACCESSOR],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MultiSelectComponent implements ControlValueAccessor {
-  public _settings: IDropdownSettings;
+export class NgMultiselectDropdown3Component {
+  public _settings: IDropdownSettings = {
+    singleSelection: false,
+    idField: "id",
+    textField: "text",
+    tooltipField: "tooltip",
+    disabledField: "isDisabled",
+    enableCheckAll: true,
+    selectAllText: "Select All",
+    unSelectAllText: "UnSelect All",
+    allowSearchFilter: false,
+    limitSelection: -1,
+    clearSearchFilter: true,
+    maxHeight: 197,
+    itemsShowLimit: 999999999999,
+    searchPlaceholderText: "Search",
+    noDataAvailablePlaceholderText: "No data available",
+    noFilteredDataAvailablePlaceholderText: "No filtered data available",
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false,
+    allowRemoteDataSearch: false
+  };
+;
   public _data: Array<ListItem> = [];
   public selectedItems: Array<ListItem> = [];
   public isDropdownOpen = true;
   _placeholder = "Select";
-  private _sourceDataType = null; // to keep note of the source data type. could be array of string/number/object
+  private _sourceDataType: string | any | number; // to keep note of the source data type. could be array of string/number/object
   private _sourceDataFields: Array<String> = []; // store source data fields names
   filter: ListItem = new ListItem(this.data);
   defaultSettings: IDropdownSettings = {
@@ -101,7 +124,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
   private onTouchedCallback: () => void = noop;
   private onChangeCallback: (_: any) => void = noop;
 
-  onFilterTextChange($event) {
+  onFilterTextChange($event: any) {
     this.onFilterChange.emit($event);
   }
 
@@ -110,13 +133,14 @@ export class MultiSelectComponent implements ControlValueAccessor {
     private cdr: ChangeDetectorRef
   ) {}
 
-  onItemClick($event: any, item: ListItem) {
+
+  onItemClick($event: any, item: ListItem): boolean | undefined{
     if (this.disabled || item.isDisabled) {
       return false;
     }
 
     const found = this.isSelected(item);
-    const allowAdd = this._settings.limitSelection === -1 || (this._settings.limitSelection > 0 && this.selectedItems.length < this._settings.limitSelection);
+    const allowAdd = this._settings.limitSelection === -1 || (this._settings.limitSelection! > 0 && this.selectedItems.length < this._settings.limitSelection!);
     if (!found) {
       if (allowAdd) {
         this.addSelected(item);
@@ -127,6 +151,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
     if (this._settings.singleSelection && this._settings.closeDropDownOnSelection) {
       this.closeDropdown();
     }
+    return undefined;
   }
 
   writeValue(value: any) {
@@ -141,7 +166,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
         }
       } else {
         const _data = value.map((item: any) => this.deobjectify(item));
-        if (this._settings.limitSelection > 0) {
+        if (this._settings.limitSelection! > 0) {
           this.selectedItems = _data.splice(0, this._settings.limitSelection);
         } else {
           this.selectedItems = _data;
@@ -172,7 +197,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
     this.onTouchedCallback();
   }
 
-  trackByFn(index, item) {
+  trackByFn(index: number, item: any) {
     return item.id;
   }
 
@@ -203,7 +228,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
 
   showButton(): boolean {
     if (!this._settings.singleSelection) {
-      if (this._settings.limitSelection > 0) {
+      if (this._settings.limitSelection! > 0) {
         return false;
       }
       // this._settings.enableCheckAll = this._settings.limitSelection === -1 ? true : false;
@@ -215,7 +240,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
   }
 
   itemShowRemaining(): number {
-    return this.selectedItems.length - this._settings.itemsShowLimit;
+    return this.selectedItems.length - this._settings.itemsShowLimit!;
   }
 
   addSelected(item: ListItem) {
@@ -240,7 +265,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
   }
 
   emittedValue(val: any): any {
-    const selected = [];
+    const selected: {}[] = [];
     if (Array.isArray(val)) {
       val.map(item => {
         selected.push(this.objectify(item));
@@ -255,14 +280,18 @@ export class MultiSelectComponent implements ControlValueAccessor {
 
   objectify(val: ListItem) {
     if (this._sourceDataType === 'object') {
-      const obj = {};
-      obj[this._settings.idField] = val.id;
-      obj[this._settings.textField] = val.text;
-      if (this._sourceDataFields.includes(this._settings.disabledField)) {
-        obj[this._settings.disabledField] = val.isDisabled;
+      const obj = new Map<string, any>();
+      obj.set(this._settings.idField as string, val.id);
+      obj.set(this._settings.textField as string, val.text);
+      // obj[this._settings.idField as string] = val.id; mojtaba
+      // obj[this._settings.textField] = val.text; mojtaba
+      if (this._sourceDataFields.includes(this._settings.disabledField!)) {
+        // obj[this._settings.disabledField] = val.isDisabled; mojtaba
+        obj.set(this._settings.disabledField as string, val.isDisabled);
       }
-      if (this._sourceDataFields.includes(this._settings.tooltipField)) {
-        obj[this._settings.tooltipField] = val.tooltip;
+      if (this._sourceDataFields.includes(this._settings.tooltipField!)) {
+        // obj[this._settings.tooltipField] = val.tooltip; mojtaba
+        obj.set(this._settings.tooltipField as string, val.tooltip);
       }
       return obj;
     }
@@ -278,15 +307,15 @@ export class MultiSelectComponent implements ControlValueAccessor {
       return new ListItem(item);
     } else {
       return new ListItem({
-        id: item[this._settings.idField],
-        text: item[this._settings.textField],
-        tooltip: item[this._settings.tooltipField],
-        isDisabled: item[this._settings.disabledField]
+        id: item[this._settings.idField!],
+        text: item[this._settings.textField!],
+        tooltip: item[this._settings.tooltipField!],
+        isDisabled: item[this._settings.disabledField!]
       })
     }
   }
 
-  toggleDropdown(evt) {
+  toggleDropdown(evt: any) {
     evt.preventDefault();
     if (this.disabled && this._settings.singleSelection) {
       return;
@@ -306,7 +335,7 @@ export class MultiSelectComponent implements ControlValueAccessor {
     this.onDropDownClose.emit();
   }
 
-  toggleSelectAll() {
+  toggleSelectAll(): boolean | undefined {
     if (this.disabled) {
       return false;
     }
@@ -319,10 +348,11 @@ export class MultiSelectComponent implements ControlValueAccessor {
       this.onDeSelectAll.emit(this.emittedValue(this.selectedItems));
     }
     this.onChangeCallback(this.emittedValue(this.selectedItems));
+    return undefined;
   }
 
-  getFields(inputData) {
-    const fields = [];
+  getFields(inputData: any) {
+    const fields: string[] = [];
     if (typeof inputData !== "object") {
       return fields;
     }

@@ -14,11 +14,17 @@
   </div>
 </main>
 
-<div class="container">
-  <select-section class="col-md-12"></select-section>
-</div>
+
 
 <footer class="footer">
+  <ng-multiselect-dropdown3
+  [placeholder]="'custom placeholder'"
+  [settings]="dropdownSettings"
+  [data]="dropdownList"
+  [(ngModel)]="selectedItems"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+  ></ng-multiselect-dropdown3>
   <div class="container">
   </div>
 </footer>

@@ -4,27 +4,20 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
-import { NgMultiSelectDropDownModule } from '../ng-multiselect-dropdown/src';
+import { NgMultiselectDropdown3Module } from '../app/ng-multiselect-dropdown3/src/public-api';
 // import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-
-import { SelectSectionComponent } from './components/select-section';
-import { SampleSectionComponent } from './components/sample-section.component';
-import { SingleDemoComponent } from './components/select/single-demo';
-import { MultipleDemoComponent } from './components/select/multiple-demo';
-import { ShCodeViewer } from '../code-viewer/code-viewer.module';
 
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [SelectSectionComponent, SampleSectionComponent, SingleDemoComponent, MultipleDemoComponent, AppComponent],
+  declarations: [AppComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
     TabsModule.forRoot(),
     ButtonsModule.forRoot(),
-    NgMultiSelectDropDownModule.forRoot(),
-    ShCodeViewer
+    NgMultiselectDropdown3Module,
   ],
   providers: [],
   bootstrap: [AppComponent]
