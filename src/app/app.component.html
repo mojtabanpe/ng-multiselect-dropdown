@@ -1,30 +1,7 @@
-<main class="bd-pageheader">
-  <div class="container">
-    <h1>ng-multiselect-dropdown</h1>
-    <p>Native Angular component for Multiple Select</p>
-    <a class="btn btn-primary" href="https://github.com/nileshpatel17/ng-multiselect-dropdown">View on GitHub</a>
-    <div>
-      <iframe src="https://ghbtns.com/github-btn.html?user=NileshPatel17&repo=ng-multiselect-dropdown&type=star&count=true" frameborder="0"
-        scrolling="0" width="80px" height="20px">
-      </iframe>
-      <iframe src="https://ghbtns.com/github-btn.html?user=NileshPatel17&repo=ng-multiselect-dropdown&type=fork&count=true" frameborder="0"
-        scrolling="0" width="80px" height="20px">
-      </iframe>
-    </div>
-  </div>
-</main>
-
-
-
-<footer class="footer">
-  <ng-multiselect-dropdown3
-  [placeholder]="'custom placeholder'"
-  [settings]="dropdownSettings"
-  [data]="dropdownList"
-  [(ngModel)]="selectedItems"
-  (onSelect)="onItemSelect($event)"
-  (onSelectAll)="onSelectAll($event)"
-  ></ng-multiselect-dropdown3>
-  <div class="container">
-  </div>
-</footer>
+<ng-multiselect-dropdown3 id="province-business" #coverageSelectLarge
+            [placeholder]="'استان را مشخص کنید'"
+            [settings]="coverageDropdownSettings"
+            [data]="coverages"
+            (onSelect)="onProvinceSelect($event)"
+            [(ngModel)]="selectedCoverages">
+          </ng-multiselect-dropdown3>

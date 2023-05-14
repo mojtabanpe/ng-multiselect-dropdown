@@ -250,7 +250,8 @@ export class NgMultiselectDropdown3Component {
     } else {
       this.selectedItems.push(item);
     }
-    this.onChangeCallback(this.emittedValue(this.selectedItems));
+
+    this.onChangeCallback(this.emittedValue(this.selectedItems));    
     this.onSelect.emit(this.emittedValue(item));
   }
 
@@ -275,23 +276,19 @@ export class NgMultiselectDropdown3Component {
         return this.objectify(val);
       }
     }
-    return selected;
+    // return selected;
   }
 
   objectify(val: ListItem) {
     if (this._sourceDataType === 'object') {
-      const obj = new Map<string, any>();
-      obj.set(this._settings.idField as string, val.id);
-      obj.set(this._settings.textField as string, val.text);
-      // obj[this._settings.idField as string] = val.id; mojtaba
-      // obj[this._settings.textField] = val.text; mojtaba
+      const obj = Object.assign({});
+      obj[this._settings.idField!] = val.id; 
+      obj[this._settings.textField!] = val.text; 
       if (this._sourceDataFields.includes(this._settings.disabledField!)) {
-        // obj[this._settings.disabledField] = val.isDisabled; mojtaba
-        obj.set(this._settings.disabledField as string, val.isDisabled);
+        obj[this._settings.disabledField!] = val.isDisabled;
       }
       if (this._sourceDataFields.includes(this._settings.tooltipField!)) {
-        // obj[this._settings.tooltipField] = val.tooltip; mojtaba
-        obj.set(this._settings.tooltipField as string, val.tooltip);
+        obj[this._settings.tooltipField!] = val.tooltip;
       }
       return obj;
     }
