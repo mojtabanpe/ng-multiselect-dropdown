@@ -22,5 +22,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
   }
   onProvinceSelect(event: any): void {
+    console.log(this.selectedCoverages);
+    
     }
   }

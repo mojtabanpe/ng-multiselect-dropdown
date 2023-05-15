@@ -276,7 +276,7 @@ export class NgMultiselectDropdown3Component {
         return this.objectify(val);
       }
     }
-    // return selected;
+    return selected;
   }
 
   objectify(val: ListItem) {
